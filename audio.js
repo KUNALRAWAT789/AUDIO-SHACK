@@ -8,7 +8,15 @@ button.addEventListener('click',async ()=>{
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
     const source = audio_context.createMediaStreamSource(stream);
 
-    await audioContext.audioWorklet.addModule('audio_processor.js'); 
-    const nodeInstance = new AudioWorkletNode(audioContext, 'shack-audio-processor');
-    
+    await audio_context.audioWorklet.addModule('audio_processor.js'); 
+    const nodeInstance = new AudioWorkletNode(audio_context, 'shack-audio-processor');
+
+    const recordParam = nodeInstance.parameters.get('isRecording');
+    recordParam.setValueAtTime(1, audio_context.currentTime);
+    recordParam.setValueAtTime(0, audio_context.currentTime + 5);
+
+    nodeInstance.port.onmessage = (event)=>{
+        const samples = event.data;
+    };
+    source.connect(nodeInstance);
 });
