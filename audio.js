@@ -16,7 +16,11 @@ button.addEventListener('click',async ()=>{
     recordParam.setValueAtTime(0, audio_context.currentTime + 5);
 
     nodeInstance.port.onmessage = (event)=>{
-        const samples = event.data;
+        const SampleBrick = event.data;
+       if(totalSamplesCaptured + SampleBrick.length <= finalRecording.length){
+        finalRecording.set(SampleBrick,totalSamplesCaptured);
+        totalSamplesCaptured += SampleBrick.length;
+       } 
     };
     source.connect(nodeInstance);
 });
